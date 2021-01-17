@@ -1,0 +1,53 @@
+﻿@model IEnumerable<GOT.ViewModels.PathViewModel>
+
+<div class="d-flex align-items-center justify-content-between">
+    <h1>Lista tras punktowanych</h1>
+    <button class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Path")'"><i class="bi-plus"></i>Dodaj trasę</button>
+</div>
+<hr />
+@if (Model.Count() == 0) {
+    <p class="mb-5 text-center" style="font-size: 100px"><i class="bi-map"></i></p>
+    <p class="text-center mb-3">Obecnie nie ma żadnej trasy do wyświetlenia.</p>
+    <p class="text-center">Stwórz trasę korzystając z przycisku "Dodaj trasę"</p>
+} else {
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Area)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreationDate)
+                </th>
+                <th>
+                    Opcje
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Area)
+                    </td>
+                    <td>
+                        @item.CreationDate.ToShortDateString()
+                    </td>
+                    <td>
+                        <button class="btn btn-light" onclick="alert('usuwanie')"><i class="bi-trash"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+
+}
