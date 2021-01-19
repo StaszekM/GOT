@@ -1,0 +1,13 @@
+﻿@model GOT.ViewModels.PathViewModel
+
+
+<h3>Usunąć trasę?</h3>
+<div>
+    <p>Czy na pewno chcesz usunąć trasę "@Model.Name"</p>
+    <hr />
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Usuń" class="btn btn-danger" /> |
+        <a asp-action="Index">Anuluj</a>
+    </form>
+</div>
