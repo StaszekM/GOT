@@ -1,4 +1,30 @@
 ﻿@model IEnumerable<GOT.ViewModels.PathViewModel>
+@using GOT.Controllers
+
+@if (TempData["Message"] != null) {
+    string typeClass = "";
+    switch ((MessageType)TempData["MessageType"]) {
+        case MessageType.SUCCESS:
+            typeClass = "alert-success";
+            break;
+        case MessageType.DANGER:
+            typeClass = "alert-danger";
+            break;
+        case MessageType.INFO:
+            typeClass = "alert-info";
+            break;
+        case MessageType.WARNING:
+            typeClass = "alert-warning";
+            break;
+    }
+
+    <div class="alert @typeClass alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Zamknij">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
 <div class="d-flex align-items-center justify-content-between">
     <h1>Lista tras punktowanych</h1>
@@ -40,7 +66,7 @@
                         @item.CreationDate.ToShortDateString()
                     </td>
                     <td>
-                        <button class="btn btn-light" onclick="alert('usuwanie')"><i class="bi-trash"></i></button>
+                        <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Path", new { id = item.Id })'"><i class="bi-trash"></i></button>
                     </td>
                 </tr>
             }
@@ -49,5 +75,4 @@
 }
 
 @section Scripts {
-
 }

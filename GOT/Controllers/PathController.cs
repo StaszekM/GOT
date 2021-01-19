@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 using GOT.ViewModels;
 
 namespace GOT.Controllers {
+    public enum MessageType {
+        SUCCESS = 0,
+        DANGER = 1,
+        WARNING = 2,
+        INFO = 3
+    }
     public class PathController : Controller {
-        public IActionResult Index() {
+        public async Task<IActionResult> Index() {
             //TODO replace with proper access to database
             List<PathViewModel> result = new List<PathViewModel>();
             result.Add(new PathViewModel { Id = 1, Area = "Sudety", Name = "Trasa testowa", CreationDate = new DateTime(2020, 11, 1) });
@@ -16,8 +22,27 @@ namespace GOT.Controllers {
             return View(result);
         }
 
-        public IActionResult Create() {
+        public async Task<IActionResult> Create() {
             return View();
         }
+
+        public async Task<IActionResult> Delete(int? id) {
+            //TODO replace with proper access to database
+            var result = new PathViewModel { Id = 1, Area = "Sudety", Name = "Trasa testowa", CreationDate = new DateTime(2020, 11, 1) };
+            //end TODO
+            return View(result);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id) {
+            //TODO replace with proper access to database
+            TempData["Message"] = "Trasa \"Trasa testowa\" została usunięta.";
+            TempData["MessageType"] = MessageType.INFO;
+            //end TODO
+            return RedirectToAction(nameof(Index));
+        }
+
+        
     }
 }
