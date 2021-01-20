@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GOT.ViewModels.PathViewModel>
+﻿@model IEnumerable<GOT.ViewModels.TripViewModel>
 @using GOT.Controllers
 
 @if (TempData["Message"] != null) {
@@ -26,30 +26,28 @@
     </div>
 }
 
-<div class="d-flex align-items-center justify-content-between">
-    <h1>Lista tras punktowanych</h1>
-    <button class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Path")'"><i class="bi-plus"></i>Dodaj trasę</button>
+<div class="d-flex align-items-center">
+    <h1>Lista wycieczek do zatwierdzenia</h1>
 </div>
 <hr />
 @if (Model.Count() == 0) {
     <p class="mb-5 text-center" style="font-size: 100px"><i class="bi-map"></i></p>
-    <p class="text-center mb-3">Obecnie nie ma żadnej trasy do wyświetlenia.</p>
-    <p class="text-center">Stwórz trasę korzystając z przycisku "Dodaj trasę"</p>
+    <p class="text-center mb-3">Obecnie nie ma żadnej wycieczki do wyświetlenia.</p>
 } else {
     <table class="table table-striped table-bordered table-hover">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.Id)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Area)
+                    @Html.DisplayNameFor(model => model.StartDate)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.CreationDate)
+                    @Html.DisplayNameFor(model => model.EndDate)
                 </th>
                 <th>
-                    Opcje
+                    @Html.DisplayNameFor(model => model.Score)
                 </th>
             </tr>
         </thead>
@@ -57,16 +55,16 @@
             @foreach (var item in Model) {
                 <tr style="cursor: pointer">
                     <td>
-                        @Html.DisplayFor(modelItem => item.Name)
+                        @Html.DisplayFor(modelItem => item.Id)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Area)
+                        @item.StartDate.ToShortDateString()
                     </td>
                     <td>
-                        @item.CreationDate.ToShortDateString()
+                        @item.EndDate.ToShortDateString()
                     </td>
                     <td>
-                        <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Path", new { id = item.Id })'"><i class="bi-trash"></i></button>
+                        @Html.DisplayFor(modelItem => item.Score)
                     </td>
                 </tr>
             }

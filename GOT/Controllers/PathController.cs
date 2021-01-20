@@ -18,6 +18,7 @@ namespace GOT.Controllers {
             //TODO replace with proper access to database
             List<PathViewModel> result = new List<PathViewModel>();
             result.Add(new PathViewModel { Id = 1, Area = "Sudety", Name = "Trasa testowa", CreationDate = new DateTime(2020, 11, 1) });
+            result.Add(new PathViewModel { Id = 1, Area = "Sudety", Name = "Trasa testowa2", CreationDate = new DateTime(2020, 11, 1) });
             //end TODO
             return View(result);
         }
