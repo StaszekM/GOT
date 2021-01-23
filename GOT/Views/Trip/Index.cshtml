@@ -53,7 +53,7 @@
         </thead>
         <tbody>
             @foreach (var item in Model) {
-                <tr style="cursor: pointer">
+                <tr style="cursor: pointer" onclick="location.href='@Url.Action("Details", "Trip", new { id = item.Id})'">
                     <td>
                         @Html.DisplayFor(modelItem => item.Id)
                     </td>
