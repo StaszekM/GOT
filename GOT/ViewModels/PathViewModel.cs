@@ -21,12 +21,16 @@ namespace GOT.ViewModels {
         [Display(Name = "Punkt B")]
         public string PointB { get; set; }
         [Display(Name = "Suma wejść A-B")]
+        [Required(ErrorMessage = "Pole jest wymagane")]
         public int ElevationAB { get; set; }
         [Display(Name = "Długość A-B")]
+        [Required(ErrorMessage = "Pole jest wymagane")]
         public int DistanceAB { get; set; }
         [Display(Name = "Suma wejść B-A")]
+        [Required(ErrorMessage = "Pole jest wymagane")]
         public int ElevationBA { get; set; }
         [Display(Name = "Długość B-A")]
+        [Required(ErrorMessage = "Pole jest wymagane")]
         public int DistanceBA { get; set; }
         [Display(Name = "Opis")]
         public string Description { get; set; }

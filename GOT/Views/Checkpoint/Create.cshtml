@@ -1,0 +1,90 @@
+﻿@model GOT.ViewModels.CheckpointViewModel
+
+<h1>Dodaj punkt konytolny</h1>
+<hr />
+
+<div class="container">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label asp-for="XCoords" class="control-label"></label>
+                    <input asp-for="XCoords" class="form-control" />
+                    <span asp-validation-for="XCoords" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label asp-for="YCoords" class="control-label"></label>
+                    <input asp-for="YCoords" class="form-control" />
+                    <span asp-validation-for="YCoords" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label asp-for="Area" class="control-label"></label>
+                    <input asp-for="Area" class="form-control" />
+                    <span asp-validation-for="Area" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label asp-for="Representative" class="control-label"></label>
+                    <input asp-for="Representative" class="form-control" />
+                    <span asp-validation-for="Representative" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+
+<div>
+    <a href="#" onclick="handleReturnClick()">Back to List</a>
+</div>
+
+<div id="go-back-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Opuścić stronę?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Masz niezatwierdzone zmiany.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="returnToIndex()">Opuść stronę</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zostań na stronie</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function handleReturnClick() {
+            $('#go-back-modal').modal();
+        }
+
+        function returnToIndex() {
+            location.href = '@Url.Action("Index", "Checkpoint")';
+        }
+    </script>
+}

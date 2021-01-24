@@ -1,0 +1,90 @@
+﻿@model IEnumerable<GOT.ViewModels.CheckpointViewModel>
+@using GOT.Controllers
+
+@if (TempData["Message"] != null) {
+    string typeClass = "";
+    switch ((MessageType)TempData["MessageType"]) {
+        case MessageType.SUCCESS:
+            typeClass = "alert-success";
+            break;
+        case MessageType.DANGER:
+            typeClass = "alert-danger";
+            break;
+        case MessageType.INFO:
+            typeClass = "alert-info";
+            break;
+        case MessageType.WARNING:
+            typeClass = "alert-warning";
+            break;
+    }
+
+    <div class="alert @typeClass alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Zamknij">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<div class="d-flex align-items-center justify-content-between">
+    <h1>Lista punktów kontrolnych</h1>
+    <button class="btn btn-primary" onclick="location.href='@Url.Action("Create", "Checkpoint")'"><i class="bi-plus"></i>Dodaj punkt kontrolny</button>
+</div>
+<hr />
+@if (Model.Count() == 0) {
+    <p class="mb-5 text-center" style="font-size: 100px"><i class="bi-geo-alt"></i></p>
+    <p class="text-center mb-3">Obecnie nie ma żadnego punktu do wyświetlenia.</p>
+    <p class="text-center">Stwórz punkt kontrolny korzystając z przycisku "Dodaj punkt kontrolny"</p>
+} else {
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.XCoords)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.YCoords)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Area)
+                </th>
+                <th>
+                    Opcje
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+            <tr style="cursor: pointer">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.XCoords)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.YCoords)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Area)
+                </td>
+                <td>
+                    <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Checkpoint", new { id = item.Id })'"><i class="bi-trash"></i></button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section Scripts {
+}
