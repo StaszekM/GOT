@@ -28,5 +28,10 @@ namespace GOT.Controllers {
             //end TODO
             return View(result);
         }
+
+        public async Task<IActionResult> Plan() {
+            TripViewModel initial = new TripViewModel { PointNames = new List<string>(), Paths = new List<DirectedPathViewModel>() };
+            return View(initial);
+        }
     }
 }

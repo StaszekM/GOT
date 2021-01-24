@@ -26,8 +26,9 @@
     </div>
 }
 
-<div class="d-flex align-items-center">
+<div class="d-flex align-items-center justify-content-between">
     <h1>Lista wycieczek do zatwierdzenia</h1>
+    <button class="btn btn-primary" onclick="location.href='@Url.Action("Plan", "Trip")'"><i class="bi-plus"></i>Zaplanuj wycieczkę</button>
 </div>
 <hr />
 @if (Model.Count() == 0) {
