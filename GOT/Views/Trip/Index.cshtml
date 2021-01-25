@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<GOT.ViewModels.TripViewModel>
 @using GOT.Controllers
 
+@{
+    ViewData["Title"] = "Lista wycieczek";
+}
+
 @if (TempData["Message"] != null) {
     string typeClass = "";
     switch ((MessageType)TempData["MessageType"]) {

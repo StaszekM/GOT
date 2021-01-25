@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<GOT.Models.Checkpoint>
 @using GOT.Controllers
 
+@{
+    ViewData["Title"] = "Punkty kontrolne";
+}
+
 @if (TempData["Message"] != null) {
     string typeClass = "";
     switch ((MessageType)TempData["MessageType"]) {
@@ -61,30 +65,37 @@
         </thead>
         <tbody>
             @foreach (var item in Model) {
-            <tr style="cursor: pointer">
-                <td>
-                    @Html.DisplayFor(modelItem => item.CheckpointId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CheckpointName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.XCoords)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.YCoords)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Area.AreaName)
-                </td>
-                <td>
-                    <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Checkpoint", new { id = item.CheckpointId })'"><i class="bi-trash"></i></button>
-                </td>
-            </tr>
+                <tr style="cursor: pointer" onclick="location.href='@Url.Action("Edit", "Checkpoint", new { id = item.CheckpointId })'">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CheckpointId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CheckpointName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.XCoords)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.YCoords)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Area.AreaName)
+                    </td>
+                    <td>
+                        <button class="btn btn-light" onclick="handleDeleteClick(event, @(item.CheckpointId))"><i class="bi-trash"></i></button>
+                    </td>
+                </tr>
             }
         </tbody>
     </table>
 }
 
 @section Scripts {
+    <script>
+        function handleDeleteClick(e, id) {
+            e.stopPropagation();
+            console.log(id);
+            location.href = `@Url.Action("Delete", "Checkpoint")/${id}`
+        }
+    </script>
 }

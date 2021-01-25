@@ -1,5 +1,9 @@
 ﻿@model GOT.Models.Path
 
+@{
+    ViewData["Title"] = "Dodaj trasę";
+}
+
 <h1>Dodaj trasę</h1>
 <hr />
 
@@ -78,14 +82,14 @@
             </div>
         </div>
         <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" />
+            <input type="submit" value="Dodaj" class="btn btn-primary" />
         </div>
     </form>
 </div>
 
 
 <div>
-    <a href="#" onclick="handleReturnClick()">Back to List</a>
+    <a href="#" onclick="handleReturnClick()">Powrót do listy</a>
 </div>
 
 <div id="go-back-modal" class="modal" tabindex="-1" role="dialog">
@@ -110,7 +114,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
+<script>
         function handleReturnClick() {
             $('#go-back-modal').modal();
         }
@@ -118,5 +122,5 @@
         function returnToIndex() {
             location.href = '@Url.Action("Index", "Path")';
         }
-    </script>
+</script>
 }

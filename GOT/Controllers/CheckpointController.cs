@@ -45,6 +45,43 @@ namespace GOT.Controllers {
             return View(checkpoint);
         }
 
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
+                return NotFound();
+            }
+
+            var checkpoint = await _context.Checkpoints.FindAsync(id);
+            if (checkpoint == null) {
+                return NotFound();
+            }
+            ViewData["AreaId"] = new SelectList(_context.Areas, "AreaId", "AreaName");
+            return View(checkpoint);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("CheckpointId, XCoords, YCoords, CheckpointName, AreaId, CheckpointDescription")] Checkpoint checkpoint) {
+            if (id != checkpoint.CheckpointId) {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid) {
+                try {
+                    _context.Update(checkpoint);
+                    await _context.SaveChangesAsync();
+                } catch (DbUpdateConcurrencyException) {
+                    if (!_context.Checkpoints.Any(element => element.CheckpointId == checkpoint.CheckpointId)) {
+                        return NotFound();
+                    } else {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["AreaId"] = new SelectList(_context.Areas, "AreaId", "AreaName");
+            return View(checkpoint);
+        }
+
         public async Task<IActionResult> Delete(int? id) {
             if (id == null)
             {
@@ -75,7 +112,10 @@ namespace GOT.Controllers {
                 TempData["Message"] = $"Punkt kontrolny nie może być usunięty, ponieważ jest \n" +
                     $"zawarty w {pathsNumber} trasach.";
                 TempData["MessageType"] = MessageType.DANGER;
+                return RedirectToAction(nameof(Index));
             }
+            TempData["Message"] = $"Punkt kontrolny {checkpoint.CheckpointName} został usunięty.";
+            TempData["MessageType"] = MessageType.SUCCESS;
             return RedirectToAction(nameof(Index));
         }
     }

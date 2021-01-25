@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<GOT.Models.Path>
 @using GOT.Controllers
 
+@{
+    ViewData["Title"] = "Trasy";
+}
+
 @if (TempData["Message"] != null) {
     string typeClass = "";
     switch ((MessageType)TempData["MessageType"]) {

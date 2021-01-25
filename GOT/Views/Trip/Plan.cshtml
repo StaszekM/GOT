@@ -1,5 +1,9 @@
 ﻿@model GOT.ViewModels.TripViewModel
 
+@{
+    ViewData["Title"] = "Zaplanuj wycieczkę";
+}
+
 <h1>Planowanie wycieczki</h1>
 <hr />
 
@@ -75,65 +79,65 @@
                 @{
                     int index = 1;
                 }
-            <tbody>
-                @foreach (var item in Model.Paths) {
-                    <tr>
-                        <td>
-                            @index
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => item.PathName)
-                        </td>
-                        <td>
-                            @(item.IsFromAToB ? item.ElevationAB : item.ElevationBA)
-                        </td>
-                        <td>
-                            @(item.IsFromAToB ? item.DistanceAB : item.DistanceBA)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => item.CheckpointA.Area)
-                        </td>
-                        <td>
-                            @(item.IsFromAToB ? item.CheckpointA : item.CheckpointB)
-                        </td>
-                        <td>
-                            @if (Model.PointNames.Count() % 2 == 0) {
+                <tbody>
+                    @foreach (var item in Model.Paths) {
+                        <tr>
+                            <td>
+                                @index
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.PathName)
+                            </td>
+                            <td>
+                                @(item.IsFromAToB ? item.ElevationAB : item.ElevationBA)
+                            </td>
+                            <td>
+                                @(item.IsFromAToB ? item.DistanceAB : item.DistanceBA)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.CheckpointA.Area)
+                            </td>
+                            <td>
                                 @(item.IsFromAToB ? item.CheckpointA : item.CheckpointB)
-                            } else {
-                                <div class="form-group"><input type="text" class="form-control" /></div>
-                            }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => item.Score)
-                        </td>
-                    </tr>
-                    index++;
-                }
-                @if (Model.PointNames.Count() % 2 == 0) {
-                    <tr>
-                        <td>@index</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td><div class="form-group"><input type="text" class="form-control" /></div></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                } else {
-                    <tr>
-                        <td>@index</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>@Model.PointNames.Last()</td>
-                        <td><div class="form-group"><input type="text" class="form-control" /></div></td>
-                        <td></td>
-                    </tr>
-                }
+                            </td>
+                            <td>
+                                @if (Model.PointNames.Count() % 2 == 0) {
+                                    @(item.IsFromAToB ? item.CheckpointA : item.CheckpointB)
+                                } else {
+                                    <div class="form-group"><input type="text" class="form-control" /></div>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.Score)
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                    @if (Model.PointNames.Count() % 2 == 0) {
+                        <tr>
+                            <td>@index</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><div class="form-group"><input type="text" class="form-control" /></div></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    } else {
+                        <tr>
+                            <td>@index</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>@Model.PointNames.Last()</td>
+                            <td><div class="form-group"><input type="text" class="form-control" /></div></td>
+                            <td></td>
+                        </tr>
+                    }
 
-            </tbody>
+                </tbody>
             </table>
         </div>
 
