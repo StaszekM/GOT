@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GOT.ViewModels.CheckpointViewModel>
+﻿@model IEnumerable<GOT.Models.Checkpoint>
 @using GOT.Controllers
 
 @if (TempData["Message"] != null) {
@@ -40,10 +40,10 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Id)
+                    @Html.DisplayNameFor(model => model.CheckpointId)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.CheckpointName)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.XCoords)
@@ -63,10 +63,10 @@
             @foreach (var item in Model) {
             <tr style="cursor: pointer">
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
+                    @Html.DisplayFor(modelItem => item.CheckpointId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.CheckpointName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.XCoords)
@@ -75,10 +75,10 @@
                     @Html.DisplayFor(modelItem => item.YCoords)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Area)
+                    @Html.DisplayFor(modelItem => item.Area.AreaName)
                 </td>
                 <td>
-                    <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Checkpoint", new { id = item.Id })'"><i class="bi-trash"></i></button>
+                    <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Checkpoint", new { id = item.CheckpointId })'"><i class="bi-trash"></i></button>
                 </td>
             </tr>
             }

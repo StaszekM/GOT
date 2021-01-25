@@ -1,4 +1,4 @@
-﻿@model GOT.ViewModels.PathViewModel
+﻿@model GOT.Models.Path
 
 <h1>Dodaj trasę</h1>
 <hr />
@@ -9,9 +9,9 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <label asp-for="PathName" class="control-label"></label>
+                    <input asp-for="PathName" class="form-control" />
+                    <span asp-validation-for="PathName" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-sm-12">
@@ -25,9 +25,8 @@
         <div class="row">
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label asp-for="PointA" class="control-label"></label>
-                    <input asp-for="PointA" class="form-control" />
-                    <span asp-validation-for="PointA" class="text-danger"></span>
+                    <label asp-for="CheckpointAId" class="control-label"></label>
+                    <select asp-for="CheckpointAId" class="form-control" asp-items="ViewBag.CheckpointId"></select>
                 </div>
 
             </div>
@@ -38,9 +37,8 @@
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label asp-for="PointB" class="control-label"></label>
-                    <input asp-for="PointB" class="form-control" />
-                    <span asp-validation-for="PointB" class="text-danger"></span>
+                    <label asp-for="CheckpointBId" class="control-label"></label>
+                    <select asp-for="CheckpointBId" class="form-control" asp-items="ViewBag.CheckpointId"></select>
                 </div>
             </div>
         </div>

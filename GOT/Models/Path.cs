@@ -1,25 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-using System.ComponentModel.DataAnnotations;
-
-namespace GOT.ViewModels {
-    //TODO replace points with proper representation instead of strings
-    public class PathViewModel {
-
-        public int Id { get; set; }
+namespace GOT.Models
+{
+    public class Path
+    {
+        public int PathId { get; set; }
         [Display(Name = "Nazwa")]
-        public string Name { get; set; }
-        [Display(Name = "Obszar")]
-        public string Area { get; set; }
+        [Required(ErrorMessage = "Pole jest wymagane")]
+        public string PathName { get; set; }
+        
         [Display(Name = "Data utworzenia")]
         public DateTime CreationDate { get; set; }
-        [Display(Name = "Punkt A")]
-        public string PointA { get; set; }
-        [Display(Name = "Punkt B")]
-        public string PointB { get; set; }
         [Display(Name = "Suma wejść A-B")]
         [Required(ErrorMessage = "Pole jest wymagane")]
         public int ElevationAB { get; set; }
@@ -34,6 +30,15 @@ namespace GOT.ViewModels {
         public int DistanceBA { get; set; }
         [Display(Name = "Opis")]
         public string Description { get; set; }
-        
+
+        [Display(Name = "Punkt A")]
+        public int CheckpointAId { get; set; }
+        [Display(Name = "Punkt A")]
+        public Checkpoint CheckpointA { get; set; }
+        [Display(Name = "Punkt B")]
+        public int CheckpointBId { get; set; }
+        [Display(Name = "Punkt B")]
+        public Checkpoint CheckpointB { get; set; }
+
     }
 }

@@ -5,41 +5,79 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using GOT.ViewModels;
+using GOT.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using GOT.Models;
 
 namespace GOT.Controllers {
-    public enum MessageType {
+    public enum MessageType
+    {
         SUCCESS = 0,
         DANGER = 1,
         WARNING = 2,
         INFO = 3
     }
+
     public class PathController : Controller {
-        public async Task<IActionResult> Index() {
-            //TODO replace with proper access to database
-            List<PathViewModel> result = new List<PathViewModel>();
-            result.Add(new PathViewModel { Id = 1, Area = "Sudety", Name = "Trasa testowa", CreationDate = new DateTime(2020, 11, 1) });
-            //end TODO
-            return View(result);
+        private readonly GotDbContext _context;
+        public PathController(GotDbContext context)
+        {
+            _context = context;
         }
 
-        public async Task<IActionResult> Create() {
+        public async Task<IActionResult> Index() {
+            var myDbContext = _context.Paths.Include(a => a.CheckpointA).Include(b => b.CheckpointB);
+            return View(await myDbContext.ToListAsync());
+        }
+
+        public IActionResult Create()
+        {
+            ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
             return View();
         }
 
         public async Task<IActionResult> Delete(int? id) {
-            //TODO replace with proper access to database
-            var result = new PathViewModel { Id = 1, Area = "Sudety", Name = "Trasa testowa", CreationDate = new DateTime(2020, 11, 1) };
-            //end TODO
-            return View(result);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var path = await _context.Paths
+                .Include(a => a.CheckpointA).Include(a => a.CheckpointB)
+                .FirstOrDefaultAsync(m => m.PathId == id);
+            if (path == null)
+            {
+                return NotFound();
+            }
+
+            return View(path);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Obsolete]
+        public async Task<IActionResult> Create([Bind("PathId,PathName,ElevationAB,DistanceAB,ElevationBA,DistanceBA,Description,CheckpointAId,CheckpointBId")] Path path)
+        {
+            if (ModelState.IsValid)
+            {
+                path.CreationDate = DateTime.Today;
+                _context.Add(path);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
+            return View(path);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id) {
-            //TODO replace with proper access to database
-            TempData["Message"] = "Trasa \"Trasa testowa\" została usunięta.";
+            var path = await _context.Paths.FindAsync(id);
+            TempData["Message"] = $"Trasa {path.PathName} została usunięta.";
             TempData["MessageType"] = MessageType.INFO;
-            //end TODO
+            _context.Paths.Remove(path);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

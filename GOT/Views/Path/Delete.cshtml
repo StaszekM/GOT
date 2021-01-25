@@ -1,12 +1,12 @@
-﻿@model GOT.ViewModels.PathViewModel
+﻿@model GOT.Models.Path
 
 
 <h3>Usunąć trasę?</h3>
 <div>
-    <p>Czy na pewno chcesz usunąć trasę "@Model.Name"</p>
+    <p>Czy na pewno chcesz usunąć trasę "@Model.PathName"</p>
     <hr />
     <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="PathId" />
         <input type="submit" value="Usuń" class="btn btn-danger" /> |
         <a asp-action="Index">Anuluj</a>
     </form>

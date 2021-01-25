@@ -1,4 +1,4 @@
-﻿@model GOT.ViewModels.CheckpointViewModel
+﻿@model GOT.Models.Checkpoint
 
 <h1>Dodaj punkt kontrolny</h1>
 <hr />
@@ -25,23 +25,22 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <label asp-for="CheckpointName" class="control-label"></label>
+                    <input asp-for="CheckpointName" class="form-control" />
+                    <span asp-validation-for="CheckpointName" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label asp-for="Area" class="control-label"></label>
-                    <input asp-for="Area" class="form-control" />
-                    <span asp-validation-for="Area" class="text-danger"></span>
+                    <label asp-for="CheckpointDescription" class="control-label"></label>
+                    <input asp-for="CheckpointDescription" class="form-control" />
+                    <span asp-validation-for="CheckpointDescription" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-sm-12">
                 <div class="form-group">
-                    <label asp-for="Representative" class="control-label"></label>
-                    <input asp-for="Representative" class="form-control" />
-                    <span asp-validation-for="Representative" class="text-danger"></span>
+                    <label asp-for="AreaId" class="control-label"></label>
+                    <select asp-for="AreaId" class="form-control" asp-items="ViewBag.AreaId"></select>
                 </div>
             </div>
         </div>

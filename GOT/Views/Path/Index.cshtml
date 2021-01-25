@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GOT.ViewModels.PathViewModel>
+﻿@model IEnumerable<GOT.Models.Path>
 @using GOT.Controllers
 
 @if (TempData["Message"] != null) {
@@ -40,10 +40,13 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Name)
+                    @Html.DisplayNameFor(model => model.PathName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Area)
+                    @Html.DisplayNameFor(model => model.CheckpointA)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CheckpointB)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.CreationDate)
@@ -55,20 +58,23 @@
         </thead>
         <tbody>
             @foreach (var item in Model) {
-                <tr style="cursor: pointer">
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Area)
-                    </td>
-                    <td>
-                        @item.CreationDate.ToShortDateString()
-                    </td>
-                    <td>
-                        <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Path", new { id = item.Id })'"><i class="bi-trash"></i></button>
-                    </td>
-                </tr>
+            <tr style="cursor: pointer">
+                <td>
+                    @Html.DisplayFor(modelItem => item.PathName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckpointA.CheckpointName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckpointB.CheckpointName)
+                </td>
+                <td>
+                    @item.CreationDate.ToShortDateString()
+                </td>
+                <td>
+                    <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Path", new { id = item.PathId })'"><i class="bi-trash"></i></button>
+                </td>
+            </tr>
             }
         </tbody>
     </table>

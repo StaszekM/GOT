@@ -55,10 +55,13 @@
                             Długość
                         </th>
                         <th>
-                            Obszar
+                            Obszar punktu początkowego
                         </th>
                         <th>
                             Punkt początkowy
+                        </th>
+                        <th>
+                            Obszar punktu końcowego
                         </th>
                         <th>
                             Punkt końcowy
@@ -79,7 +82,7 @@
                             @index
                         </td>
                         <td>
-                            @Html.DisplayFor(model => item.Name)
+                            @Html.DisplayFor(model => item.PathName)
                         </td>
                         <td>
                             @(item.IsFromAToB ? item.ElevationAB : item.ElevationBA)
@@ -88,14 +91,14 @@
                             @(item.IsFromAToB ? item.DistanceAB : item.DistanceBA)
                         </td>
                         <td>
-                            @Html.DisplayFor(model => item.Area)
+                            @Html.DisplayFor(model => item.CheckpointA.Area)
                         </td>
                         <td>
-                            @(item.IsFromAToB ? item.PointA : item.PointB)
+                            @(item.IsFromAToB ? item.CheckpointA : item.CheckpointB)
                         </td>
                         <td>
                             @if (Model.PointNames.Count() % 2 == 0) {
-                                @(item.IsFromAToB ? item.PointB : item.PointA)
+                                @(item.IsFromAToB ? item.CheckpointA : item.CheckpointB)
                             } else {
                                 <div class="form-group"><input type="text" class="form-control" /></div>
                             }
