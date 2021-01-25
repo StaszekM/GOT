@@ -62,7 +62,7 @@
         </thead>
         <tbody>
             @foreach (var item in Model) {
-            <tr style="cursor: pointer">
+            <tr style="cursor: pointer" onclick="location.href='@Url.Action("Edit", "Path", new { id = item.PathId })'">
                 <td>
                     @Html.DisplayFor(modelItem => item.PathName)
                 </td>
@@ -76,7 +76,7 @@
                     @item.CreationDate.ToShortDateString()
                 </td>
                 <td>
-                    <button class="btn btn-light" onclick="location.href='@Url.Action("Delete", "Path", new { id = item.PathId })'"><i class="bi-trash"></i></button>
+                    <button class="btn btn-light" onclick="handleDeleteClick(event, @(item.PathId))"><i class="bi-trash"></i></button>
                 </td>
             </tr>
             }
@@ -85,4 +85,10 @@
 }
 
 @section Scripts {
+    <script>
+        function handleDeleteClick(e, id) {
+            e.stopPropagation();
+            location.href = `@Url.Action("Delete", "Path")/${id}`
+        }
+    </script>
 }

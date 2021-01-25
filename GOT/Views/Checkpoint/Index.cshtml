@@ -94,7 +94,6 @@
     <script>
         function handleDeleteClick(e, id) {
             e.stopPropagation();
-            console.log(id);
             location.href = `@Url.Action("Delete", "Checkpoint")/${id}`
         }
     </script>

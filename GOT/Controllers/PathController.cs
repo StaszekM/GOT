@@ -37,6 +37,57 @@ namespace GOT.Controllers {
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Obsolete]
+        public async Task<IActionResult> Create([Bind("PathId,PathName,ElevationAB,DistanceAB,ElevationBA,DistanceBA,Description,CheckpointAId,CheckpointBId")] Path path) {
+            if (ModelState.IsValid) {
+                path.CreationDate = DateTime.Today;
+                _context.Add(path);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
+            return View(path);
+        }
+
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null) {
+                return NotFound();
+            }
+
+            var path = await _context.Paths.FindAsync(id);
+            if (path == null) {
+                return NotFound();
+            }
+            ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
+            return View(path);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("PathId,PathName,ElevationAB,CreationDate,DistanceAB,ElevationBA,DistanceBA,Description,CheckpointAId,CheckpointBId")] Path path) {
+            if (id != path.PathId) {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid) {
+                try {
+                    _context.Update(path);
+                    await _context.SaveChangesAsync();
+                } catch (DbUpdateConcurrencyException) {
+                    if (!_context.Paths.Any(element => element.PathId == path.PathId)) {
+                        return NotFound();
+                    } else {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
+            return View(path);
+        }
+
         public async Task<IActionResult> Delete(int? id) {
             if (id == null)
             {
@@ -51,22 +102,6 @@ namespace GOT.Controllers {
                 return NotFound();
             }
 
-            return View(path);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Obsolete]
-        public async Task<IActionResult> Create([Bind("PathId,PathName,ElevationAB,DistanceAB,ElevationBA,DistanceBA,Description,CheckpointAId,CheckpointBId")] Path path)
-        {
-            if (ModelState.IsValid)
-            {
-                path.CreationDate = DateTime.Today;
-                _context.Add(path);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
             return View(path);
         }
 
