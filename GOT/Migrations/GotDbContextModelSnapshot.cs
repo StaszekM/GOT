@@ -124,6 +124,9 @@ namespace GOT.Migrations
                     b.Property<int>("ElevationBA")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsFromAToB")
+                        .HasColumnType("bit");
+
                     b.Property<string>("PathName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -135,6 +138,108 @@ namespace GOT.Migrations
                     b.HasIndex("CheckpointBId");
 
                     b.ToTable("Paths");
+                });
+
+            modelBuilder.Entity("GOT.Models.PathTrip", b =>
+                {
+                    b.Property<int>("PathTripID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PathId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TripId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PathTripID");
+
+                    b.HasIndex("PathId");
+
+                    b.HasIndex("TripId");
+
+                    b.ToTable("PathTrips");
+                });
+
+            modelBuilder.Entity("GOT.Models.Trip", b =>
+                {
+                    b.Property<int>("TripId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TripId");
+
+                    b.ToTable("Trips");
+
+                    b.HasData(
+                        new
+                        {
+                            TripId = 1,
+                            EndDate = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsApproved = false,
+                            IsCompleted = false,
+                            Score = 10,
+                            StartDate = new DateTime(2020, 11, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            TripId = 2,
+                            EndDate = new DateTime(2020, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsApproved = false,
+                            IsCompleted = false,
+                            Score = 20,
+                            StartDate = new DateTime(2020, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            TripId = 3,
+                            EndDate = new DateTime(2020, 11, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsApproved = false,
+                            IsCompleted = false,
+                            Score = 30,
+                            StartDate = new DateTime(2020, 11, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            TripId = 4,
+                            EndDate = new DateTime(2020, 11, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsApproved = false,
+                            IsCompleted = false,
+                            Score = 40,
+                            StartDate = new DateTime(2020, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            TripId = 5,
+                            EndDate = new DateTime(2020, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsApproved = false,
+                            IsCompleted = false,
+                            Score = 50,
+                            StartDate = new DateTime(2020, 11, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("GOT.Models.Checkpoint", b =>
@@ -167,6 +272,25 @@ namespace GOT.Migrations
                     b.Navigation("CheckpointB");
                 });
 
+            modelBuilder.Entity("GOT.Models.PathTrip", b =>
+                {
+                    b.HasOne("GOT.Models.Path", "Path")
+                        .WithMany("PathTrips")
+                        .HasForeignKey("PathId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GOT.Models.Trip", "Category")
+                        .WithMany("PathTrips")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Path");
+                });
+
             modelBuilder.Entity("GOT.Models.Area", b =>
                 {
                     b.Navigation("Checkpoints");
@@ -177,6 +301,16 @@ namespace GOT.Migrations
                     b.Navigation("PathsA");
 
                     b.Navigation("PathsB");
+                });
+
+            modelBuilder.Entity("GOT.Models.Path", b =>
+                {
+                    b.Navigation("PathTrips");
+                });
+
+            modelBuilder.Entity("GOT.Models.Trip", b =>
+                {
+                    b.Navigation("PathTrips");
                 });
 #pragma warning restore 612, 618
         }

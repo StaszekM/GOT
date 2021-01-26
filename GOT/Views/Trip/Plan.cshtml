@@ -1,4 +1,4 @@
-﻿@model GOT.ViewModels.TripViewModel
+﻿@model GOT.Models.Trip
 
 @{
     ViewData["Title"] = "Zaplanuj wycieczkę";
@@ -31,10 +31,10 @@
                             @Html.DisplayFor(model => model.Score)
                         </td>
                         <td>
-                            @Html.DisplayFor(model => model.Elevation)
+                            @TempData["Elevation"]
                         </td>
                         <td>
-                            @Html.DisplayFor(model => model.Distance)
+                            @TempData["Distance"]
                         </td>
                     </tr>
                 </tbody>
@@ -76,46 +76,48 @@
                     </tr>
 
                 </thead>
-                @{
-                    int index = 1;
-                }
                 <tbody>
-                    @foreach (var item in Model.Paths) {
+                    @if (Model.PathTrips != null)
+                    {
+                    @foreach (var item in Model.PathTrips)
+                    {
                         <tr>
                             <td>
-                                @index
+                                test
                             </td>
                             <td>
-                                @Html.DisplayFor(model => item.PathName)
+                                @Html.DisplayFor(model => item.Order)
                             </td>
                             <td>
-                                @(item.IsFromAToB ? item.ElevationAB : item.ElevationBA)
+                                @(item.Order)
                             </td>
                             <td>
-                                @(item.IsFromAToB ? item.DistanceAB : item.DistanceBA)
+                                <!--item.IsFromAToB ? item.DistanceAB : item.DistanceBA-->
                             </td>
                             <td>
-                                @Html.DisplayFor(model => item.CheckpointA.Area)
+                                @Html.DisplayFor(model => item.Order)
                             </td>
                             <td>
-                                @(item.IsFromAToB ? item.CheckpointA : item.CheckpointB)
+                                @(item.Order)
                             </td>
                             <td>
-                                @if (Model.PointNames.Count() % 2 == 0) {
-                                    @(item.IsFromAToB ? item.CheckpointA : item.CheckpointB)
-                                } else {
+                                @if (Model.Description == "")
+                                {
+                                    @(item.Order)
+                                }
+                                else
+                                {
                                     <div class="form-group"><input type="text" class="form-control" /></div>
                                 }
                             </td>
                             <td>
-                                @Html.DisplayFor(model => item.Score)
+                                @Html.DisplayFor(model => item.Order)
                             </td>
                         </tr>
-                        index++;
-                    }
-                    @if (Model.PointNames.Count() % 2 == 0) {
+                    }}
+                    @if (Model.Description == "") {
                         <tr>
-                            <td>@index</td>
+                            <td>test</td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -126,12 +128,12 @@
                         </tr>
                     } else {
                         <tr>
-                            <td>@index</td>
+                            <td>test</td>
                             <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
-                            <td>@Model.PointNames.Last()</td>
+                            <td>@Model.Description</td>
                             <td><div class="form-group"><input type="text" class="form-control" /></div></td>
                             <td></td>
                         </tr>

@@ -1,4 +1,4 @@
-﻿@model GOT.ViewModels.TripViewModel
+﻿@model GOT.Models.Trip
 
 @{
     ViewData["Title"] = "Podgląd niezatwierdzonej wycieczki";
@@ -6,19 +6,19 @@
 
 <h3>Podgląd niezatwierdzonej wycieczki</h3>
 <hr />
-<p>ID: @Model.Id</p>
+<p>ID: @Model.TripId</p>
 <div>
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.PointNames)
+                    @Html.DisplayNameFor(model => model.TripId)
                 </th>
 
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.PointNames) {
+            @foreach (var item in Model.PathTrips) {
                 <tr>
                     <td>
                         @item
@@ -32,10 +32,10 @@
             <div class="col-lg-6">
                 <div class="w-100 mb-3 d-flex justify-content-between align-items-center">
                     <p class="m-0">
-                        Ustalone obszary (@Model.Areas.Count()):
+                        Ustalone obszary (@Model.TripId):
                     </p>
                     <h3 class="m-0">
-                        @String.Join(", ", Model.Areas.ToArray())
+                        @String.Join(", ", Model.TripId)
                     </h3>
                 </div>
                 <div class="w-100 d-flex justify-content-between align-items-center">

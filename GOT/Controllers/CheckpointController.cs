@@ -1,6 +1,5 @@
 ﻿using GOT.Data;
 using GOT.Models;
-using GOT.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;

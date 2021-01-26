@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GOT.ViewModels.TripViewModel>
+﻿@model IEnumerable<GOT.Models.Trip>
 @using GOT.Controllers
 
 @{
@@ -43,7 +43,7 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Id)
+                    @Html.DisplayNameFor(model => model.TripId)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.StartDate)
@@ -58,9 +58,9 @@
         </thead>
         <tbody>
             @foreach (var item in Model) {
-                <tr style="cursor: pointer" onclick="location.href='@Url.Action("Details", "Trip", new { id = item.Id})'">
+                <tr style="cursor: pointer" onclick="location.href='@Url.Action("Details", "Trip", new { id = item.TripId})'">
                     <td>
-                        @Html.DisplayFor(modelItem => item.Id)
+                        @Html.DisplayFor(modelItem => item.TripId)
                     </td>
                     <td>
                         @item.StartDate.ToShortDateString()
