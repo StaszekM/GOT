@@ -26,6 +26,13 @@ namespace GOT {
             services.AddMvc(options => {
                 options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(s => $"Wartoœæ {s} musi byæ liczb¹");
             });
+
+            services.AddSession(opt => {
+                opt.IdleTimeout = TimeSpan.FromMinutes(10);
+                opt.Cookie.HttpOnly = true;
+                opt.Cookie.IsEssential = true;
+            });
+
             services.AddDbContextPool<GotDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("GotCS")));
         }
@@ -50,6 +57,8 @@ namespace GOT {
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(

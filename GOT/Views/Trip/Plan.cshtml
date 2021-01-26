@@ -1,12 +1,34 @@
 ﻿@model GOT.Models.Trip
-
+@using GOT.Controllers
 @{
     ViewData["Title"] = "Zaplanuj wycieczkę";
 }
+@if (TempData["Message"] != null) {
+    string typeClass = "";
+    switch ((MessageType)TempData["MessageType"]) {
+        case MessageType.SUCCESS:
+            typeClass = "alert-success";
+            break;
+        case MessageType.DANGER:
+            typeClass = "alert-danger";
+            break;
+        case MessageType.INFO:
+            typeClass = "alert-info";
+            break;
+        case MessageType.WARNING:
+            typeClass = "alert-warning";
+            break;
+    }
 
+    <div class="alert @typeClass alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Zamknij">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 <h1>Planowanie wycieczki</h1>
 <hr />
-
 <div class="container">
     <div class="row">
         <div class="col-md-5">
@@ -77,71 +99,89 @@
 
                 </thead>
                 <tbody>
-                    @if (Model.PathTrips != null)
-                    {
-                    @foreach (var item in Model.PathTrips)
-                    {
-                        <tr>
-                            <td>
-                                test
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.Order)
-                            </td>
-                            <td>
-                                @(item.Order)
-                            </td>
-                            <td>
-                                <!--item.IsFromAToB ? item.DistanceAB : item.DistanceBA-->
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.Order)
-                            </td>
-                            <td>
-                                @(item.Order)
-                            </td>
-                            <td>
-                                @if (Model.Description == "")
-                                {
-                                    @(item.Order)
-                                }
-                                else
-                                {
-                                    <div class="form-group"><input type="text" class="form-control" /></div>
-                                }
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.Order)
-                            </td>
-                        </tr>
-                    }}
-                    @if (Model.Description == "") {
-                        <tr>
-                            <td>test</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td><div class="form-group"><input type="text" class="form-control" /></div></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    } else {
-                        <tr>
-                            <td>test</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td>@Model.Description</td>
-                            <td><div class="form-group"><input type="text" class="form-control" /></div></td>
-                            <td></td>
-                        </tr>
-                    }
-
+                    @if (Model.PathTrips != null) {
+                        @foreach (var item in Model.PathTrips) {
+                            <tr>
+                                <td>
+                                    @item.Order
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(model => item.Path.PathName)
+                                </td>
+                                <td>
+                                    @if (item.Path.IsFromAToB) {
+                                        @Html.DisplayFor(model => item.Path.ElevationAB)
+                                    } else {
+                                        @Html.DisplayFor(model => item.Path.ElevationBA)
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Path.IsFromAToB) {
+                                        @Html.DisplayFor(model => item.Path.DistanceAB)
+                                    } else {
+                                        @Html.DisplayFor(model => item.Path.DistanceBA)
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Path.IsFromAToB) {
+                                        @Html.DisplayFor(model => item.Path.CheckpointA.Area)
+                                    } else {
+                                        @Html.DisplayFor(model => item.Path.CheckpointB.Area)
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Path.IsFromAToB) {
+                                        @Html.DisplayFor(model => item.Path.CheckpointA.CheckpointName)
+                                    } else {
+                                        @Html.DisplayFor(model => item.Path.CheckpointB.CheckpointName)
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Path.IsFromAToB) {
+                                        @Html.DisplayFor(model => item.Path.CheckpointB.Area)
+                                    } else {
+                                        @Html.DisplayFor(model => item.Path.CheckpointA.Area)
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Path.IsFromAToB) {
+                                        @Html.DisplayFor(model => item.Path.CheckpointB.CheckpointName)
+                                    } else {
+                                        @Html.DisplayFor(model => item.Path.CheckpointA.CheckpointName)
+                                    }
+                                </td>
+                                <td>
+                                    test
+                                    <!--replace with proper score calculation-->
+                                </td>
+                            </tr>
+                        }}
                 </tbody>
             </table>
         </div>
 
     </div>
-</div> 
+    <div class="row mt-3">
+        <div class="col">
+            <button @((Model.PathTrips?.Count() ?? 0) == 0 ? "disabled" : "") class="btn btn-light mr-3" onclick="handleRemoveLastPathClick(event)">Usuń ostatnią dodaną trasę</button>
+            <button class="btn btn-light mr-3" onclick="handleAddPathClick(event)">Dodaj trasę</button>
+            <button class="btn btn-primary" onclick="handleSaveTripClick(event)">Zapisz wycieczkę</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function handleRemoveLastPathClick(event) {
+            location.href = '@Url.Action("RemoveLastPath")'
+        }
+
+        function handleAddPathClick(event) {
+            location.href = '@Url.Action("ShowPathSelection")'
+        }
+
+        function handleSaveTripClick(event) {
+            location.href = '@Url.Action("SavePlan")'
+        }
+    </script>
+}
