@@ -31,6 +31,10 @@ namespace GOT.Controllers {
                 plannedTrip = new Trip();
                 TempData["Elevation"] = 0;
                 TempData["Distance"] = 0;
+
+                _context.Add(plannedTrip);
+                await _context.SaveChangesAsync();
+
                 SavePlannedTrip(plannedTrip);
             }
             TempData["Elevation"] = 222; //sample value
@@ -71,7 +75,7 @@ namespace GOT.Controllers {
                 };
             } else {
                 PathTrip lastPathTrip = plannedTrip.PathTrips.OrderBy(pathTrip => pathTrip.Order).Last();
-                Checkpoint lastCheckpoint = lastPathTrip.Path.IsFromAToB ? lastPathTrip.Path.CheckpointB : lastPathTrip.Path.CheckpointA;
+                Checkpoint lastCheckpoint = lastPathTrip.IsFromAToB ? lastPathTrip.Path.CheckpointB : lastPathTrip.Path.CheckpointA;
 
                 model = new PathSelectionViewModel() {
                     AvailablePaths = await _context.Paths.Include(path => path.CheckpointA).Include(path => path.CheckpointB).Where(path => path.CheckpointA.CheckpointId == lastCheckpoint.CheckpointId || path.CheckpointB.CheckpointId == lastCheckpoint.CheckpointId).ToListAsync(),
@@ -89,6 +93,31 @@ namespace GOT.Controllers {
                 return RedirectToAction(nameof(Plan));
             }
             //TODO update trip in DB with newly selected path, return trip planning view with updated trip model
+            Path matchingPath = await _context.Paths.FindAsync(pathId);
+            if (matchingPath == null) {
+                return NotFound();
+            }
+
+            if (plannedTrip.PathTrips == null) {
+                plannedTrip.PathTrips = new List<PathTrip>();
+            }
+
+            int maxOrder;
+            if (plannedTrip.PathTrips.Count() == 0) {
+                maxOrder = 0;
+            } else {
+                maxOrder = plannedTrip.PathTrips.Select(pathTrip => pathTrip.Order).Max();
+            }
+
+            maxOrder += 1;
+
+            if (isFromA == null) {
+
+            } else {
+                plannedTrip.PathTrips.Add(new PathTrip() { Order = maxOrder, PathId = matchingPath.PathId, IsFromAToB = (bool)isFromA, TripId = plannedTrip.TripId });
+                _context.Update(plannedTrip);
+                await _context.SaveChangesAsync();
+            }
             SavePlannedTrip(plannedTrip);
             return RedirectToAction(nameof(Plan));
         }
@@ -115,7 +144,8 @@ namespace GOT.Controllers {
         }
 
         public void SavePlannedTrip(Trip trip) {
-            HttpContext.Session.SetString("PlannedTrip", Newtonsoft.Json.JsonConvert.SerializeObject(trip));
+            HttpContext.Session.SetString("PlannedTrip", Newtonsoft.Json.JsonConvert.SerializeObject(trip, 
+                new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore }));
         }
 
         public void RemovePlannedTrip() {

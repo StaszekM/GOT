@@ -109,42 +109,42 @@
                                     @Html.DisplayFor(model => item.Path.PathName)
                                 </td>
                                 <td>
-                                    @if (item.Path.IsFromAToB) {
+                                    @if (item.IsFromAToB) {
                                         @Html.DisplayFor(model => item.Path.ElevationAB)
                                     } else {
                                         @Html.DisplayFor(model => item.Path.ElevationBA)
                                     }
                                 </td>
                                 <td>
-                                    @if (item.Path.IsFromAToB) {
+                                    @if (item.IsFromAToB) {
                                         @Html.DisplayFor(model => item.Path.DistanceAB)
                                     } else {
                                         @Html.DisplayFor(model => item.Path.DistanceBA)
                                     }
                                 </td>
                                 <td>
-                                    @if (item.Path.IsFromAToB) {
+                                    @if (item.IsFromAToB) {
                                         @Html.DisplayFor(model => item.Path.CheckpointA.Area)
                                     } else {
                                         @Html.DisplayFor(model => item.Path.CheckpointB.Area)
                                     }
                                 </td>
                                 <td>
-                                    @if (item.Path.IsFromAToB) {
+                                    @if (item.IsFromAToB) {
                                         @Html.DisplayFor(model => item.Path.CheckpointA.CheckpointName)
                                     } else {
                                         @Html.DisplayFor(model => item.Path.CheckpointB.CheckpointName)
                                     }
                                 </td>
                                 <td>
-                                    @if (item.Path.IsFromAToB) {
+                                    @if (item.IsFromAToB) {
                                         @Html.DisplayFor(model => item.Path.CheckpointB.Area)
                                     } else {
                                         @Html.DisplayFor(model => item.Path.CheckpointA.Area)
                                     }
                                 </td>
                                 <td>
-                                    @if (item.Path.IsFromAToB) {
+                                    @if (item.IsFromAToB) {
                                         @Html.DisplayFor(model => item.Path.CheckpointB.CheckpointName)
                                     } else {
                                         @Html.DisplayFor(model => item.Path.CheckpointA.CheckpointName)

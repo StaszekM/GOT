@@ -30,7 +30,6 @@ namespace GOT.Models
         public int DistanceBA { get; set; }
         [Display(Name = "Opis")]
         public string Description { get; set; }
-        public bool IsFromAToB { get; set; }
 
         [Display(Name = "Punkt A")]
         public int CheckpointAId { get; set; }
