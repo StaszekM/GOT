@@ -55,5 +55,23 @@ namespace GOT.Models {
             }
             return elevation;
         }
+
+        public static IEnumerable<Area> GetTripAreas(Trip trip) {
+            if ((trip.PathTrips?.Count() ?? 0) == 0) {
+                return new List<Area>();
+            }
+
+            List<Area> areas = new List<Area>();
+            foreach (var pathTrip in trip.PathTrips) {
+                if (!areas.Any(area => area.AreaId == pathTrip.Path.CheckpointA.AreaId)) {
+                    areas.Add(pathTrip.Path.CheckpointA.Area);
+                }
+                if (!areas.Any(area => area.AreaId == pathTrip.Path.CheckpointB.AreaId)) {
+                    areas.Add(pathTrip.Path.CheckpointB.Area);
+                }
+            }
+
+            return areas;
+        }
     }
 }

@@ -32,7 +32,13 @@ namespace GOT.Controllers {
 
         public IActionResult Create()
         {
-            ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
+            SelectList checkpoints = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
+            if (checkpoints.Count() < 2) {
+                TempData["Message"] = "Obecnie nie ma wystarczającej liczby punktów kontrolnych (2), żeby wyznaczyć trasę. Stwórz najpierw punkty kontrolne.";
+                TempData["MessageType"] = MessageType.WARNING;
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CheckpointId"] = checkpoints;
             return View();
         }
 

@@ -17,12 +17,23 @@ namespace GOT.Controllers {
             _context = context;
         }
         public async Task<IActionResult> Index() {
-            var tripsWithPaths = await _context.Trips.Where(trip => trip.PathTrips != null && trip.PathTrips.Count() != 0).ToListAsync();
+            var tripsWithPaths = await _context.Trips.Where(trip => trip.PathTrips != null && trip.PathTrips.Count() != 0 && !trip.IsApproved && trip.IsCompleted).ToListAsync();
             return View(tripsWithPaths);
         }
 
         public async Task<IActionResult> Details(int? id) {
-            return View();
+            if (id == null) {
+                return NotFound();
+            }
+
+            Trip trip;
+            try {
+                trip = await GetAllTripData((int)id);
+            } catch (NullReferenceException) {
+                return NotFound();
+            }
+
+            return View(trip);
         }
 
         public async Task<IActionResult> Plan() {
@@ -66,6 +77,10 @@ namespace GOT.Controllers {
             }
 
             plannedTrip.Score = Utils.GetTripScore(plannedTrip);
+            plannedTrip.IsCompleted = true;
+            plannedTrip.IsApproved = false;
+            plannedTrip.StartDate = DateTime.Now.AddDays(-1);
+            plannedTrip.EndDate = DateTime.Now;
             _context.Update(plannedTrip);
             await _context.SaveChangesAsync();
 
@@ -158,6 +173,36 @@ namespace GOT.Controllers {
 
             SavePlannedTripId((int)plannedTripId);
             return RedirectToAction(nameof(Plan));
+        }
+
+        public async Task<IActionResult> ApproveTrip(int? id) {
+            if (id == null) {
+                return NotFound();
+            }
+
+            Trip trip;
+            try {
+                trip = await GetAllTripData((int)id);
+            } catch (NullReferenceException) {
+                return NotFound();
+            }
+
+            IEnumerable<Area> tripAreas = Utils.GetTripAreas(trip);
+            int[] guidesAreas = new int[1] { 3 }; //current guide's areas
+
+            if (tripAreas.Select(area => area.AreaId).Any(area => !guidesAreas.Contains(area))) {
+                IEnumerable<Area> missingAreas = tripAreas.Where(area => !guidesAreas.Contains(area.AreaId));
+                TempData["Message"] = $"Nie można zatwierdzić wycieczki, brak uprawnień dla obszarów: {string.Join(", ", missingAreas.Select(area => area.AreaName))}";
+                TempData["MessageType"] = MessageType.DANGER;
+            } else {
+                trip.IsApproved = true;
+                _context.Update(trip);
+                await _context.SaveChangesAsync();
+                TempData["Message"] = $"Wycieczka zatwierdzona.";
+                TempData["MessageType"] = MessageType.SUCCESS;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<Trip> GetAllTripData(int tripId) {
