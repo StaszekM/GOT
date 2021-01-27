@@ -65,9 +65,12 @@ namespace GOT.Controllers {
                 return RedirectToAction(nameof(Plan));
             }
 
+            plannedTrip.Score = Utils.GetTripScore(plannedTrip);
+            _context.Update(plannedTrip);
+            await _context.SaveChangesAsync();
+
             TempData["Message"] = "Wycieczka zapisana.";
             TempData["MessageType"] = MessageType.SUCCESS;
-            //TODO save planned trip in dband return to index
             RemovePlannedTripId();
             return RedirectToAction(nameof(Index));
         }
