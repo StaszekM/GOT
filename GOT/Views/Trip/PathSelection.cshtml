@@ -48,7 +48,7 @@
                             <td>@Html.DisplayFor(model => path.DistanceBA)</td>
                             <td>@Html.DisplayFor(model => path.CheckpointA.CheckpointName)</td>
                             <td>@Html.DisplayFor(model => path.CheckpointB.CheckpointName)</td>
-                            <td>test</td>
+                            <td>@(Utils.GetPathScore(path, true))/@(Utils.GetPathScore(path, false))</td>
                             <td>
                                 @if (Model.CanChooseBidirectionally) {
                                     <button class="btn btn-light" onclick="handleFromAToBClick(event, @(path.PathId))">Z punktu A</button>
@@ -61,6 +61,11 @@
                     }
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a asp-action="Plan">Powrót</a>
         </div>
     </div>
 </div>

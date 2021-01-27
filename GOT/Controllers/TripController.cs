@@ -17,8 +17,8 @@ namespace GOT.Controllers {
             _context = context;
         }
         public async Task<IActionResult> Index() {
-            var myDbContext = _context.Trips;
-            return View(await myDbContext.ToListAsync());
+            var tripsWithPaths = await _context.Trips.Where(trip => trip.PathTrips != null && trip.PathTrips.Count() != 0).ToListAsync();
+            return View(tripsWithPaths);
         }
 
         public async Task<IActionResult> Details(int? id) {
@@ -26,8 +26,9 @@ namespace GOT.Controllers {
         }
 
         public async Task<IActionResult> Plan() {
-            Trip? plannedTrip = RetrievePlannedTrip();
-            if (plannedTrip == null) {
+            int? plannedTripId = GetPlannedTripId();
+            Trip plannedTrip;
+            if (plannedTripId == null) {
                 plannedTrip = new Trip();
                 TempData["Elevation"] = 0;
                 TempData["Distance"] = 0;
@@ -35,19 +36,31 @@ namespace GOT.Controllers {
                 _context.Add(plannedTrip);
                 await _context.SaveChangesAsync();
 
-                SavePlannedTrip(plannedTrip);
+                SavePlannedTripId(plannedTrip.TripId);
+                plannedTrip = await _context.Trips.FindAsync(plannedTrip.TripId);
+                return View(plannedTrip);
             }
-            TempData["Elevation"] = 222; //sample value
-            TempData["Distance"] = 100; //sample valie
+
+            plannedTrip = await GetAllTripData((int)plannedTripId);
+            plannedTrip.Score = Utils.GetTripScore(plannedTrip);
+
+            TempData["Elevation"] = Utils.GetTotalTripElevation(plannedTrip);
+            TempData["Distance"] = Utils.GetTotalTripDistance(plannedTrip);
 
             return View(plannedTrip);
         }
 
-        [HttpPost]
         public async Task<IActionResult> SavePlan() {
-            Trip? plannedTrip = RetrievePlannedTrip();
-            if (plannedTrip == null) {
+            int? plannedTripId = GetPlannedTripId();
+            if (plannedTripId == null) {
                 TempData["Message"] = "Twoja sesja wygasła lub nie planowałeś żadnej wycieczki - zaplanuj wycieczkę jeszcze raz.";
+                TempData["MessageType"] = MessageType.WARNING;
+                return RedirectToAction(nameof(Plan));
+            }
+
+            Trip plannedTrip = await GetAllTripData((int)plannedTripId);
+            if ((plannedTrip.PathTrips?.Count() ?? 0) == 0) {
+                TempData["Message"] = "Nie ma żadnych tras w wycieczce, nie można zapisać.";
                 TempData["MessageType"] = MessageType.WARNING;
                 return RedirectToAction(nameof(Plan));
             }
@@ -55,18 +68,19 @@ namespace GOT.Controllers {
             TempData["Message"] = "Wycieczka zapisana.";
             TempData["MessageType"] = MessageType.SUCCESS;
             //TODO save planned trip in dband return to index
-            RemovePlannedTrip();
+            RemovePlannedTripId();
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> ShowPathSelection() {
-            Trip? plannedTrip = RetrievePlannedTrip();
-            if (plannedTrip == null) {
+            int? plannedTripId = GetPlannedTripId();
+            if (plannedTripId == null) {
                 TempData["Message"] = "Twoja sesja wygasła lub nie planowałeś żadnej wycieczki - zaplanuj wycieczkę jeszcze raz.";
                 TempData["MessageType"] = MessageType.WARNING;
                 return RedirectToAction(nameof(Plan));
             }
 
+            Trip plannedTrip = await GetAllTripData((int)plannedTripId);
             PathSelectionViewModel model;
             if ((plannedTrip.PathTrips?.Count() ?? 0) == 0) {
                 model = new PathSelectionViewModel() {
@@ -86,14 +100,15 @@ namespace GOT.Controllers {
         }
         [Route("/Trip/SelectPath,{pathId},{isFromA}")]
         public async Task<IActionResult> SelectPath(int pathId, bool? isFromA) {
-            Trip? plannedTrip = RetrievePlannedTrip();
-            if (plannedTrip == null) {
+            int? plannedTripId = GetPlannedTripId();
+            if (plannedTripId == null) {
                 TempData["Message"] = "Twoja sesja wygasła lub nie planowałeś żadnej wycieczki - zaplanuj wycieczkę jeszcze raz.";
                 TempData["MessageType"] = MessageType.WARNING;
                 return RedirectToAction(nameof(Plan));
             }
-            //TODO update trip in DB with newly selected path, return trip planning view with updated trip model
-            Path matchingPath = await _context.Paths.FindAsync(pathId);
+
+            Trip plannedTrip = await GetAllTripData((int)plannedTripId);
+            Path matchingPath = await _context.Paths.Include(path => path.CheckpointA).Include(path => path.CheckpointB).FirstAsync(path => path.PathId == pathId);
             if (matchingPath == null) {
                 return NotFound();
             }
@@ -102,54 +117,64 @@ namespace GOT.Controllers {
                 plannedTrip.PathTrips = new List<PathTrip>();
             }
 
-            int maxOrder;
+            PathTrip lastPathTrip;
             if (plannedTrip.PathTrips.Count() == 0) {
-                maxOrder = 0;
+                lastPathTrip = new PathTrip() { Order = 0 };
             } else {
-                maxOrder = plannedTrip.PathTrips.Select(pathTrip => pathTrip.Order).Max();
+                lastPathTrip = plannedTrip.PathTrips.OrderByDescending(pathTrip => pathTrip.Order).First();
             }
-
-            maxOrder += 1;
 
             if (isFromA == null) {
-
-            } else {
-                plannedTrip.PathTrips.Add(new PathTrip() { Order = maxOrder, PathId = matchingPath.PathId, IsFromAToB = (bool)isFromA, TripId = plannedTrip.TripId });
-                _context.Update(plannedTrip);
-                await _context.SaveChangesAsync();
+                int lastCheckpointId = lastPathTrip.IsFromAToB ? lastPathTrip.Path.CheckpointB.CheckpointId : lastPathTrip.Path.CheckpointA.CheckpointId;
+                isFromA = matchingPath.CheckpointA.CheckpointId == lastCheckpointId;
             }
-            SavePlannedTrip(plannedTrip);
+
+            plannedTrip.PathTrips.Add(new PathTrip() { Order = lastPathTrip.Order + 1, PathId = matchingPath.PathId, IsFromAToB = (bool)isFromA, TripId = plannedTrip.TripId });
+            _context.Update(plannedTrip);
+            await _context.SaveChangesAsync();
+
+            SavePlannedTripId(plannedTrip.TripId);
             return RedirectToAction(nameof(Plan));
         }
 
         public async Task<IActionResult> RemoveLastPath() {
-            Trip? plannedTrip = RetrievePlannedTrip();
-            if (plannedTrip == null) {
+            int? plannedTripId = GetPlannedTripId();
+            if (plannedTripId == null) {
                 TempData["Message"] = "Twoja sesja wygasła lub nie planowałeś żadnej wycieczki - zaplanuj wycieczkę jeszcze raz.";
                 TempData["MessageType"] = MessageType.WARNING;
                 return RedirectToAction(nameof(Plan));
             }
-            //TODO remove last path and return to trip planning view with updated trip model
-            SavePlannedTrip(plannedTrip);
+
+            Trip plannedTrip = await GetAllTripData((int)plannedTripId);
+            if ((plannedTrip.PathTrips?.Count() ?? 0) != 0) {
+                PathTrip toRemove = plannedTrip.PathTrips.OrderByDescending(pathTrip => pathTrip.Order).First();
+                plannedTrip.PathTrips.Remove(toRemove);
+                _context.Update(plannedTrip);
+                await _context.SaveChangesAsync();
+            }
+
+            SavePlannedTripId((int)plannedTripId);
             return RedirectToAction(nameof(Plan));
         }
 
-        public Trip? RetrievePlannedTrip() {
-            string? tripData = HttpContext.Session.GetString("PlannedTrip");
-            if (tripData == null) {
-                return null;
-            }
-
-            return Newtonsoft.Json.JsonConvert.DeserializeObject<Trip>(tripData);
+        public async Task<Trip> GetAllTripData(int tripId) {
+            Trip plannedTrip = await _context.Trips.FindAsync(tripId);
+            plannedTrip.PathTrips = await _context.PathTrips.Include(pathTrip => pathTrip.Path).ThenInclude(path => path.CheckpointA).ThenInclude(chkpt => chkpt.Area)
+                .Include(pathTrip => pathTrip.Path).ThenInclude(path => path.CheckpointB).ThenInclude(chkpt => chkpt.Area)
+                .Where(pathTrip => pathTrip.TripId == tripId).ToListAsync();
+            return plannedTrip;
         }
 
-        public void SavePlannedTrip(Trip trip) {
-            HttpContext.Session.SetString("PlannedTrip", Newtonsoft.Json.JsonConvert.SerializeObject(trip, 
-                new Newtonsoft.Json.JsonSerializerSettings() { ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore }));
+        public int? GetPlannedTripId() {
+            return HttpContext.Session.GetInt32("PlannedTripId");
         }
 
-        public void RemovePlannedTrip() {
-            HttpContext.Session.Remove("PlannedTrip");
+        public void SavePlannedTripId(int tripId) {
+            HttpContext.Session.SetInt32("PlannedTripId", tripId);
+        }
+
+        public void RemovePlannedTripId() {
+            HttpContext.Session.Remove("PlannedTripId");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿@model GOT.Models.Trip
 @using GOT.Controllers
+
 @{
     ViewData["Title"] = "Zaplanuj wycieczkę";
 }
@@ -124,9 +125,9 @@
                                 </td>
                                 <td>
                                     @if (item.IsFromAToB) {
-                                        @Html.DisplayFor(model => item.Path.CheckpointA.Area)
+                                        @Html.DisplayFor(model => item.Path.CheckpointA.Area.AreaName)
                                     } else {
-                                        @Html.DisplayFor(model => item.Path.CheckpointB.Area)
+                                        @Html.DisplayFor(model => item.Path.CheckpointB.Area.AreaName)
                                     }
                                 </td>
                                 <td>
@@ -138,9 +139,9 @@
                                 </td>
                                 <td>
                                     @if (item.IsFromAToB) {
-                                        @Html.DisplayFor(model => item.Path.CheckpointB.Area)
+                                        @Html.DisplayFor(model => item.Path.CheckpointB.Area.AreaName)
                                     } else {
-                                        @Html.DisplayFor(model => item.Path.CheckpointA.Area)
+                                        @Html.DisplayFor(model => item.Path.CheckpointA.Area.AreaName)
                                     }
                                 </td>
                                 <td>
@@ -151,8 +152,7 @@
                                     }
                                 </td>
                                 <td>
-                                    test
-                                    <!--replace with proper score calculation-->
+                                    @(Utils.GetPathTripScore(item))
                                 </td>
                             </tr>
                         }}
