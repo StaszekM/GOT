@@ -50,6 +50,8 @@ namespace GOT.Controllers {
                 path.CreationDate = DateTime.Today;
                 _context.Add(path);
                 await _context.SaveChangesAsync();
+                TempData["Message"] = "Trasa została dodana.";
+                TempData["MessageType"] = MessageType.SUCCESS;
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
@@ -87,6 +89,9 @@ namespace GOT.Controllers {
                         throw;
                     }
                 }
+
+                TempData["Message"] = "Zmiany zostały zapisane.";
+                TempData["MessageType"] = MessageType.SUCCESS;
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CheckpointId"] = new SelectList(_context.Checkpoints, "CheckpointId", "CheckpointName");
