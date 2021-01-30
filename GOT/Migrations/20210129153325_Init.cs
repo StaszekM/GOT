@@ -74,7 +74,6 @@ namespace GOT.Migrations
                     ElevationBA = table.Column<int>(type: "int", nullable: false),
                     DistanceBA = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsFromAToB = table.Column<bool>(type: "bit", nullable: false),
                     CheckpointAId = table.Column<int>(type: "int", nullable: false),
                     CheckpointBId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -103,7 +102,8 @@ namespace GOT.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Order = table.Column<int>(type: "int", nullable: false),
                     PathId = table.Column<int>(type: "int", nullable: false),
-                    TripId = table.Column<int>(type: "int", nullable: false)
+                    TripId = table.Column<int>(type: "int", nullable: false),
+                    IsFromAToB = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -113,7 +113,7 @@ namespace GOT.Migrations
                         column: x => x.PathId,
                         principalTable: "Paths",
                         principalColumn: "PathId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PathTrips_Trips_TripId",
                         column: x => x.TripId,
@@ -132,18 +132,6 @@ namespace GOT.Migrations
                     { 3, "Tatry" },
                     { 4, "Sudety" },
                     { 5, "Gory Swietokrzyskie" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Trips",
-                columns: new[] { "TripId", "Description", "EndDate", "IsApproved", "IsCompleted", "Score", "StartDate" },
-                values: new object[,]
-                {
-                    { 1, null, new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 10, new DateTime(2020, 11, 19, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, null, new DateTime(2020, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 20, new DateTime(2020, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, null, new DateTime(2020, 11, 26, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 30, new DateTime(2020, 11, 21, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, null, new DateTime(2020, 11, 27, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 40, new DateTime(2020, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, null, new DateTime(2020, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), false, false, 50, new DateTime(2020, 11, 23, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.CreateIndex(

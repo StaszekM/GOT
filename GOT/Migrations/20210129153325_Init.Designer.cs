@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GOT.Migrations
 {
     [DbContext(typeof(GotDbContext))]
-    [Migration("20210127155105_MoveIsFromAToBColumn")]
-    partial class MoveIsFromAToBColumn
+    [Migration("20210129153325_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -195,53 +195,6 @@ namespace GOT.Migrations
                     b.HasKey("TripId");
 
                     b.ToTable("Trips");
-
-                    b.HasData(
-                        new
-                        {
-                            TripId = 1,
-                            EndDate = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = false,
-                            IsCompleted = false,
-                            Score = 10,
-                            StartDate = new DateTime(2020, 11, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            TripId = 2,
-                            EndDate = new DateTime(2020, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = false,
-                            IsCompleted = false,
-                            Score = 20,
-                            StartDate = new DateTime(2020, 11, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            TripId = 3,
-                            EndDate = new DateTime(2020, 11, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = false,
-                            IsCompleted = false,
-                            Score = 30,
-                            StartDate = new DateTime(2020, 11, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            TripId = 4,
-                            EndDate = new DateTime(2020, 11, 27, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = false,
-                            IsCompleted = false,
-                            Score = 40,
-                            StartDate = new DateTime(2020, 11, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            TripId = 5,
-                            EndDate = new DateTime(2020, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = false,
-                            IsCompleted = false,
-                            Score = 50,
-                            StartDate = new DateTime(2020, 11, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("GOT.Models.Checkpoint", b =>
@@ -279,7 +232,7 @@ namespace GOT.Migrations
                     b.HasOne("GOT.Models.Path", "Path")
                         .WithMany("PathTrips")
                         .HasForeignKey("PathId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("GOT.Models.Trip", "Trip")

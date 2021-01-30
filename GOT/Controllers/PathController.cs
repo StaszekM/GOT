@@ -119,10 +119,18 @@ namespace GOT.Controllers {
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id) {
             var path = await _context.Paths.FindAsync(id);
+            _context.Paths.Remove(path);
+            try
+            {
+                await _context.SaveChangesAsync();
+            } catch (DbUpdateException)
+            {
+                TempData["Message"] = $"Trasa {path.PathName} nie może zostać usunięta, ponieważ istenieją wycieczki ją zawierające.";
+                TempData["MessageType"] = MessageType.DANGER;
+                return RedirectToAction(nameof(Index));
+            }
             TempData["Message"] = $"Trasa {path.PathName} została usunięta.";
             TempData["MessageType"] = MessageType.INFO;
-            _context.Paths.Remove(path);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
